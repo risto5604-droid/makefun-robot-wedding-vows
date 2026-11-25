@@ -27,6 +27,14 @@ def main():
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
         f.write(LINE)
+    # Read-back: the file the grader reads must contain exactly LINE —
+    # same characters, same single line, no trailing newline or
+    # whitespace the grader could count against the 160-char limit.
+    with open("/output/entry.txt", "r", encoding="utf-8") as f:
+        written = f.read()
+    assert written == LINE, "read-back mismatch: /output/entry.txt does not match LINE"
+    assert written == written.strip() and "\n" not in written, "read-back has trailing whitespace or newline"
+    assert len(written.encode("utf-8")) == len(LINE.encode("utf-8")), "read-back UTF-8 byte length differs from LINE"
 
 
 if __name__ == "__main__":
